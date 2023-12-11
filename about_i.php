@@ -204,7 +204,8 @@ session_start(); // Start the session at the very beginning
         <span class="brand-text">CRIMELEON</span>
         <div class="header-links">
             <a href="investigator.php">HOME</a>
-            <a href="inv_   record.php">RECORD</a>
+            <a href="index_inv.html">MAP</a>
+            <a href="inv_record.php">RECORD</a>
             <a href="about_i.php">ABOUT US</a>
             <span class="user-name"><?php echo htmlspecialchars($_SESSION['firstname'] . " " . $_SESSION['lastname']); ?></span>
             <div class="dropdown">

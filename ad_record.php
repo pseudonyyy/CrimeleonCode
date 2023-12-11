@@ -44,7 +44,7 @@ if (isset($_GET['search']) && !empty($_GET['search'])) {
         type_of_incident LIKE '%$search%' OR
         datetime_of_incident LIKE '%$search%' OR
         datetime_reported LIKE '%$search%' OR
-        place_of_incident LIKE '%$search%'";
+        places LIKE '%$search%'";
         
 } else {
     // If no search query is provided, retrieve all records
@@ -244,6 +244,7 @@ $conn->close();
     <span class="brand-text">CRIMELEON</span>
     <div class="header-links">
         <a href="admin.php">HOME</a> 
+        <a href="index_admin.html">MAP</a>
         <a href="users.php">USERS</a> 
         <a href="ad_record.php">RECORD</a>
         <a href="about_a.php">ABOUT US</a>
@@ -295,7 +296,7 @@ $conn->close();
                     <td><?php echo htmlspecialchars($row["type_of_incident"]); ?></td>
                     <td><?php echo htmlspecialchars($row["datetime_of_incident"]); ?></td>
                     <td><?php echo htmlspecialchars($row["datetime_reported"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["place_of_incident"]); ?></td>
+                    <td><?php echo htmlspecialchars($row["places"]); ?></td>
                 </tr>
             <?php endforeach; ?>
         </table>

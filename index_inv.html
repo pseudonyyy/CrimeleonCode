@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRIMELEON - MAP</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <style>
+        @import url('https://fonts.cdnfonts.com/css/lovelo?styles=25962');
+    </style>
+         
+   <style>
+
+
+    body {
+        font-family: 'Lovelo', sans-serif;
+        color: #000000;
+        margin: 0;
+        padding: 20;
+    }
+
+    #searchInput {
+        font-family: 'Lovelo', sans-serif;
+        padding: 8px;
+        margin-bottom: 10px;
+        width: calc(100% - 16px); /* Adjust width to account for padding */
+        border: 1px solid #070707;
+        border-radius: 4px;
+        box-sizing: border-box; /* Ensures padding doesn't affect overall width */
+    }
+
+    #searchInput:focus {
+        outline: none;
+        border-color: #1f1f1f; /* Highlight color when focused */
+        box-shadow: 0 0 5px rgba(31, 31, 31, 0.5); /* Subtle glow effect */
+    }
+
+    #map {
+        height: 100vh;
+        width: 100%;
+    } 
+    #dataContainer {
+    /* Styles for the container */
+    border: 1px solid #ddd;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.5);
+    }
+
+    #dataContainer table {
+        /* Styles for the table */
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    #dataContainer th, #dataContainer td {
+        /* Styles for table headers and cells */
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+
+    #dataContainer th {
+        /* Styles for table headers */
+        background-color: #f2f2f2;
+    }
+
+    #dataContainer tr:nth-child(even) {
+        /* Zebra striping for rows */
+        background-color: #f9f9f9;
+    }
+    
+    </style>
+</head>
+<body>
+    <button id="goBackButton" style="
+    font-family: 'Lovelo', sans-serif;
+    position: absolute; 
+    top: 10px; 
+    right: 10px; 
+    z-index: 1000;
+    background-color: rgb(55, 126, 233); /* Green background */
+    color: white; /* White text */
+    padding: 10px 20px; /* Some padding */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer/hand icon */
+    font-size: 16px; /* Increase font size */
+    ">Back</button>
+
+    <div id="map"></div>
+    <div id="dataContainer" style="position: absolute; bottom: 10px; right: 10px; z-index: 1000; background: white; padding: 10px; max-height: 200px; overflow-y: auto;">
+        <input type="text" id="searchInput" placeholder="Search..." style="width: 100%; margin-bottom: 10px;">
+        <table id="dataList" style="width: 100%;">
+            <thead>
+                <tr>
+                    <th>Place of Incident</th>
+                    <th>Type of Incident</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data rows will be added here -->
+            </tbody>
+        </table>
+    </div>
+    
+    
+    
+    
+
+   <!-- Leaflet JS and Heatmap Script -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="leaflet-heat.js"></script>
+
+
+    <!-- Map Initialization -->
+    <script>
+        var map = L.map('map').setView([10.718875962110578, 122.57890823052136], 16);
+    
+        // OSM Layer
+        var osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        });
+        osm.addTo(map);
+    
+     
+        var customGradient = {
+            0.3: 'blue',  // Lower intensity: fewer points
+            0.7: 'orange', // Medium intensity: moderate number of points
+            0.9: 'red'     // Higher intensity: many points
+        };
+
+        var heat = L.heatLayer([], {
+            radius: 30,    // Increase radius to make individual points influence a larger area
+            blur: 30,      // Increase blur to smooth out the color transitions
+            maxZoom: 15,
+            gradient: customGradient
+        }).addTo(map);
+
+    </script>
+    
+
+    <!-- back button  -->
+    <script>
+        document.getElementById('goBackButton').addEventListener('click', function() {
+            window.location.href = 'investigator.php'; // Modify this URL as needed
+        });
+    </script>
+    
+
+    <!-- Fetch Data and Add Markers -->
+    <script>
+
+        // Define the custom small icon
+
+        var redIcon = L.icon({
+            iconSize: [31, 36], // size of the icon (half of the default size)
+            iconAnchor: [13.60, 30.5], // point of the icon which will correspond to marker's location
+            popupAnchor: [0, -20.5], // point from which the popup should open relative to the iconAnchor
+            iconUrl: 'redicon.png', // URL to the red icon
+        });
+
+        var smallIcon = L.icon({
+            iconUrl: 'blueicon.png',
+            iconSize: [30, 35], // size of the icon (half of the default size)
+            iconAnchor: [13.25, 30.5], // point of the icon which will correspond to marker's location
+            popupAnchor: [0, -20.5] // point from which the popup should open relative to the iconAnchor
+        
+        });
+    
+    var markers = []; // Store marker references
+
+    function addMarkersToMap(reports) {
+    var dataList = document.getElementById('dataList').querySelector('tbody');
+    dataList.innerHTML = ''; // Clear existing data
+    markers = []; // Clear existing markers
+
+    if (!reports || !Array.isArray(reports) || reports.length === 0) {
+        console.error("No reports data or data is not in expected format.");
+        return;
+    }
+
+    var heatPoints = [];
+
+    reports.forEach(report => {
+        console.log("Report:", report);
+        if (!report.latitude || !report.longitude || report.status !== 'Approved') {
+            console.log("Skipping report due to invalid data or status:", report);
+            return; // Skip this report if data is invalid or status is not 'Approved'
+        }
+
+        var lat = parseFloat(report.latitude);
+        var lng = parseFloat(report.longitude);
+
+        // Prepare the popup content
+        var popupContent = "<b>Place:</b> " + (report.places || "No place name") +
+                           "<br><b>Type of Incident:</b> " + (report.type_of_incident || "No type specified");
+
+        console.log("Adding marker at:", lat, lng); // Log each marker's position
+        L.marker([lat, lng], { icon: smallIcon }).addTo(map) // Use the small icon
+            .bindPopup(popupContent);
+
+        // Add point to heatmap
+        heatPoints.push([lat, lng, 1]); // 1 is the intensity
+
+        // Create marker
+        var marker = L.marker([lat, lng], { icon: smallIcon }).addTo(map)
+        .bindPopup(popupContent);
+
+        markers.push({ marker, report }); // Store marker with its report data
+
+        // Add data to the container
+        var dataItem = document.createElement('div');
+        dataList.appendChild(dataItem);
+
+        // Add data to the table
+        var row = dataList.insertRow();
+        var cellPlace = row.insertCell(0);
+        var cellType = row.insertCell(1);
+        cellPlace.textContent = report.places || "No place name";
+        cellType.textContent = report.type_of_incident || "No type specified";
+    });
+
+    // Set data to heatmap
+    heat.setLatLngs(heatPoints);
+}
+
+    
+        fetch('http://localhost:3000/api/places')
+            .then(response => response.json())
+            .then(data => addMarkersToMap(data))
+            .catch(error => console.error('Error fetching data:', error));
+    
+    document.getElementById('searchInput').addEventListener('input', function(e) {
+    var searchTerm = e.target.value.toLowerCase();
+
+    markers.forEach(function(item) {
+        var report = item.report;
+        var marker = item.marker;
+
+        // Check if there is a search term and if it matches the report data
+        var match = searchTerm && (report.places.toLowerCase().includes(searchTerm) || report.type_of_incident.toLowerCase().includes(searchTerm));
+
+        if (match) {
+            marker.setIcon(redIcon); // Change to a red icon
+        } else {
+            marker.setIcon(smallIcon); // Change back to the original icon
+        }
+
+        marker.addTo(map); // Ensure marker is added to the map
+    });
+});
+
+
+
+    </script>
+    
+
+</body>
+</html>

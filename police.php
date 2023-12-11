@@ -22,18 +22,18 @@ if ($conn->connect_error) {
 }
 
 // Fetch latitude and longitude from your report table
-$sql = "SELECT lat, lng FROM report";
-$result = $conn->query($sql);
+// $sql = "SELECT latit, lng FROM report";
+// $result = $conn->query($sql);
 
-$locations = array();
+// $locations = array();
 
-if ($result->num_rows > 0) {
-    while($row = $result->fetch_assoc()) {
-        $locations[] = array("lat" => floatval($row["lat"]), "lng" => floatval($row["lng"]));
-    }
-} else {
-    echo "0 results";
-}
+// if ($result->num_rows > 0) {
+//     while($row = $result->fetch_assoc()) {
+//         $locations[] = array("lat" => floatval($row["lat"]), "lng" => floatval($row["lng"]));
+//     }
+// } else {
+//     echo "0 results";
+// }
 $conn->close();
 
 ?>
@@ -42,8 +42,8 @@ $conn->close();
 <html>
 <head>
     <title>CRIMELEON - Home</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <!-- <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script> -->
     <style>
         @import url('https://fonts.cdnfonts.com/css/lovelo?styles=25962');
     </style>
@@ -208,6 +208,7 @@ $conn->close();
     <span class="brand-text">CRIMELEON</span>
     <div class="header-links">
         <a href="police.php">HOME</a>
+        <a href="index_police.html">MAP</a>
         <a href="form.php">FORM</a>
         <a href="record.php">RECORD</a>
         <a href="about_p.php">ABOUT US</a>
@@ -231,11 +232,11 @@ $conn->close();
 </section>
 
 
-<div class="map-container">
+<!-- <div class="map-container">
 <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31361.61802420642!2d122.55727460274082!3d10.718877870449328!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33aee508bcc075c3%3A0x7f47e3a00fc75b26!2sLa%20Paz%2C%20Iloilo%20City%2C%20Iloilo!5e0!3m2!1sen!2sph!4v1700481049992!5m2!1sen!2sph" width="1000" height="800" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-</div>
+</div> -->
 
-<script>
+<!-- <script>
 function initMap() {
     var map = new google.maps.Map(document.getElementById('map'), {
         zoom: 12,
@@ -250,7 +251,7 @@ function initMap() {
             title: 'Crime reported here'
         });
     });
-}
+} -->
 </script>
 
 

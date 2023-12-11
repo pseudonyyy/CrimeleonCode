@@ -171,6 +171,7 @@ if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'Admin') {
     <span class="brand-text">CRIMELEON</span>
     <div class="header-links">
         <a href="admin.php">HOME</a>
+        <a href="index_admin.html">MAP</a>
         <a href="users.php">USERS</a>
         <a href="ad_record.php">RECORD</a>
         <a href="about_a.php">ABOUT US</a>

@@ -44,7 +44,7 @@ if (isset($_GET['search']) && !empty($_GET['search'])) {
         type_of_incident LIKE '%$search%' OR
         datetime_of_incident LIKE '%$search%' OR
         datetime_reported LIKE '%$search%' OR
-        place_of_incident LIKE '%$search%'";
+        places LIKE '%$search%'";
         
 } else {
     // If no search query is provided, retrieve all records
@@ -232,6 +232,53 @@ $conn->close();
         vertical-align: middle;
         }
 
+        .content form {
+        display: flex;
+        align-items: center;
+        gap: 10px; /* Spacing between elements */
+    }
+
+    .content label {
+        margin-right: 5px;
+    }
+
+    .content input[type="text"] {
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    .content input[type="text"]:focus {
+        outline: none;
+        border-color: #4CAF50;
+        box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+    }
+
+    .content button {
+        font-family: 'Lovelo', sans-serif;
+        padding: 8px 15px;
+        background-color: #0a2242; /* Green background */
+        color: white; /* White text */
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+    }
+
+    .content button:hover {
+        background-color: #174e97; /* Darker green on hover */
+    }
+
+    .content button[type="reset"] {
+        background-color: #0a2242; /* Red background for reset button */
+    }
+
+    .content button[type="reset"]:hover {
+        background-color: #174e97; /* Darker red on hover */
+    }
+
         
     
 
@@ -243,9 +290,10 @@ $conn->close();
     <img src="logo2.png" alt="Logo">
     <span class="brand-text">CRIMELEON</span>
     <div class="header-links">
-        <a href="investigator.php">HOME</a> 
+        <a href="investigator.php">HOME</a>
+        <a href="index_inv.html">MAP</a> 
         <a href="inv_record.php">RECORD</a>
-        <a href="about_i    .php">ABOUT US</a>
+        <a href="about_i.php">ABOUT US</a>
         <span class="user-name"><?php echo htmlspecialchars($_SESSION['firstname'] . " " . $_SESSION['lastname']); ?></span>
         <div class="dropdown">
             <img src="logout.png" alt="Logout Icon" style="cursor: pointer; width: 50px; height: 50px;">
@@ -288,7 +336,7 @@ $conn->close();
             </tr>
             <?php foreach ($data as $row): ?>
                 <tr>
-                    <td style="color: <?php echo ($row['status'] == 'Approved') ? 'green' : (($row['status'] == 'Pending') ? 'yellow' : 'red'); ?>">
+                    <td style="color: <?php echo ($row['status'] == 'Approved') ? 'green' : (($row['status'] == 'Pending') ? 'orange' : 'red'); ?>">
                         <?php echo htmlspecialchars($row['status']); ?>
                     </td>
                     <td>
@@ -299,7 +347,7 @@ $conn->close();
                     <td><?php echo htmlspecialchars($row["type_of_incident"]); ?></td>
                     <td><?php echo htmlspecialchars($row["datetime_of_incident"]); ?></td>
                     <td><?php echo htmlspecialchars($row["datetime_reported"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["place_of_incident"]); ?></td>
+                    <td><?php echo htmlspecialchars($row["places"]); ?></td>
                 </tr>
             <?php endforeach; ?>
         </table>
@@ -339,7 +387,7 @@ $conn->close();
             </tr>
             <?php foreach ($data as $row): ?>
              <tr>
-            <td style="color: <?php echo ($row['status'] == 'Approved') ? 'green' : (($row['status'] == 'Pending') ? 'yellow' : 'red'); ?>">
+            <td style="color: <?php echo ($row['status'] == 'Approved') ? 'green' : (($row['status'] == 'Pending') ? 'orange' : 'red'); ?>">
                 <?php echo htmlspecialchars($row['status']); ?>
             </td>
             <td><?php echo htmlspecialchars($row["data_id"]); ?></td>
@@ -425,7 +473,7 @@ $conn->close();
             </tr>
             <?php foreach ($data as $row): ?>
         <tr>
-            <td style="color: <?php echo ($row['status'] == 'Approved') ? 'green' : (($row['status'] == 'Pending') ? 'yellow' : 'red'); ?>">
+            <td style="color: <?php echo ($row['status'] == 'Approved') ? 'green' : (($row['status'] == 'Pending') ? 'orange' : 'red'); ?>">
                 <?php echo htmlspecialchars($row['status']); ?>
             </td>
             <td><?php echo htmlspecialchars($row["data_id"]); ?></td>
@@ -488,7 +536,7 @@ $conn->close();
             </tr>
             <?php foreach ($data as $row): ?>
         <tr>
-            <td style="color: <?php echo ($row['status'] == 'Approved') ? 'green' : (($row['status'] == 'Pending') ? 'yellow' : 'red'); ?>">
+            <td style="color: <?php echo ($row['status'] == 'Approved') ? 'green' : (($row['status'] == 'Pending') ? 'orange' : 'red'); ?>">
                 <?php echo htmlspecialchars($row['status']); ?>
             </td>
             <td><?php echo htmlspecialchars($row["data_id"]); ?></td>
@@ -536,7 +584,7 @@ $conn->close();
             </tr>
             <?php foreach ($data as $row): ?>
         <tr>
-            <td style="color: <?php echo ($row['status'] == 'Approved') ? 'green' : (($row['status'] == 'Pending') ? 'yellow' : 'red'); ?>">
+            <td style="color: <?php echo ($row['status'] == 'Approved') ? 'green' : (($row['status'] == 'Pending') ? 'orange' : 'red'); ?>">
                 <?php echo htmlspecialchars($row['status']); ?>
             </td>
             <td>
@@ -587,7 +635,7 @@ $conn->close();
             </tr>
             <?php foreach ($data as $row): ?>
                 <tr>
-                    <td style="color: <?php echo ($row['status'] == 'Approved') ? 'green' : (($row['status'] == 'Pending') ? 'yellow' : 'red'); ?>">
+                    <td style="color: <?php echo ($row['status'] == 'Approved') ? 'green' : (($row['status'] == 'Pending') ? 'orange' : 'red'); ?>">
                     <?php echo htmlspecialchars($row['status']); ?>
                     </td>
                     <td><?php echo htmlspecialchars($row["data_id"]); ?></td>

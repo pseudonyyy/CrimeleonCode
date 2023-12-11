@@ -204,6 +204,7 @@ session_start(); // Start the session at the very beginning
         <span class="brand-text">CRIMELEON</span>
         <div class="header-links">
             <a href="police.php">HOME</a>
+            <a href="index_police.html">MAP</a>
             <a href="form.php">FORM</a>
             <a href="record.php">RECORD</a>
             <a href="about_p.php">ABOUT US</a>

@@ -78,6 +78,7 @@ if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'Investigator')
     <span class="brand-text">CRIMELEON</span>
     <div class="header-links">
         <a href="investigator.php">HOME</a>
+        <a href="index_inv.html">MAP</a>
         <a href="inv_record.php">RECORD</a>
         <a href="about_i.php">ABOUT US</a>
         <span class="user-name"><?php echo htmlspecialchars($_SESSION['firstname'] . " " . $_SESSION['lastname']); ?></span>
@@ -108,7 +109,7 @@ if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'Investigator')
         background-size: cover;
         background-position: center;
         position: relative;
-        height: 400px; /* You can adjust this according to your image's height or your preference */
+        height: 600px; /* You can adjust this according to your image's height or your preference */
         display: flex;
         align-items: center;
         justify-content: center;

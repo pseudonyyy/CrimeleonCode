@@ -23,11 +23,11 @@ $stmt = $conn->prepare("INSERT INTO report (a_family_name, a_first_name, a_middl
     c_citizenship, c_gender, c_civil_status, c_date_of_birth, c_age, c_place_of_birth, c_home_phone, c_mobile_phone, 
     c_current_address, c_village_sitio_current, c_barangay_current, c_town_city_current, c_province_current, c_other_address, 
     c_village_sitio_other, c_barangay_other, c_town_city_other, c_province_other, c_highest_educational_attainment, 
-    c_occupation, c_id_card_presented, c_email_address, type_of_incident, datetime_of_incident, datetime_reported, place_of_incident, narrative, 
-    administering_officer, rank_name_of_desk_officer, blotter_number, police_station_name, investigator_on_case, chief_head_of_office
-    ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    c_occupation, c_id_card_presented, c_email_address, type_of_incident, datetime_of_incident, datetime_reported, places, narrative, 
+    administering_officer, rank_name_of_desk_officer, blotter_number, police_station_name, investigator_on_case, chief_head_of_office, latitude, longitude
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-$stmt->bind_param("ssssssssiisssssssssssssssssssssssssiisssssssssssssssssssssssssssssssssssssssssiissssssssssssssssssssssssssss",
+$stmt->bind_param("ssssssssiisssssssssssssssssssssssssiisssssssssssssssssssssssssssssssssssssssssiissssssssssssssssssssssssssssdd",
     $a_family_name, $a_first_name, $a_middle_name, $a_qualifier, $a_nickname, $a_citizenship, $a_gender, $a_civil_status, 
     $a_date_of_birth, $a_age, $a_place_of_birth, $a_home_phone, $a_mobile_phone, $a_current_address, $a_village_sitio_current, 
     $a_barangay_current, $a_town_city_current, $a_province_current, $a_other_address, $a_village_sitio_other, $a_barangay_other, 
@@ -43,8 +43,8 @@ $stmt->bind_param("ssssssssiisssssssssssssssssssssssssiissssssssssssssssssssssss
     $c_current_address, $c_village_sitio_current, $c_barangay_current, $c_town_city_current, $c_province_current, $c_other_address, 
     $c_village_sitio_other, $c_barangay_other, $c_town_city_other, $c_province_other, $c_highest_educational_attainment, 
     $c_occupation, $c_id_card_presented, $c_email_address, $type_of_incident, $datetime_of_incident, $datetime_reported, 
-    $place_of_incident, $narrative, $administering_officer, $rank_name_of_desk_officer, $blotter_number, $police_station_name, 
-    $investigator_on_case, $chief_head_of_office);
+    $places, $narrative, $administering_officer, $rank_name_of_desk_officer, $blotter_number, $police_station_name, 
+    $investigator_on_case, $chief_head_of_office, $latitude, $longitude);
 
   $a_family_name = $_POST['a_family_name'];
   $a_first_name = $_POST['a_first_name'];
@@ -146,7 +146,7 @@ $stmt->bind_param("ssssssssiisssssssssssssssssssssssssiissssssssssssssssssssssss
   $type_of_incident = $_POST['type_of_incident'];
   $datetime_of_incident = $_POST['datetime_of_incident'];
   $datetime_reported = $_POST['datetime_reported'];
-  $place_of_incident = $_POST['place_of_incident'];
+  $places = $_POST['places'];
   $narrative = $_POST['narrative'];
   $administering_officer = $_POST['administering_officer']; 
   $rank_name_of_desk_officer = $_POST['rank_name_of_desk_officer'];
@@ -154,6 +154,8 @@ $stmt->bind_param("ssssssssiisssssssssssssssssssssssssiissssssssssssssssssssssss
   $police_station_name = $_POST['police_station_name'];
   $investigator_on_case = $_POST['investigator_on_case'];
   $chief_head_of_office = $_POST['chief_head_of_office'];
+  $latitude = $_POST['latitude'];
+  $longitude = $_POST['longitude'];
 
  
 if (!$stmt->execute()) {
@@ -305,6 +307,7 @@ text-align: right; /* Right aligns the text in the label */
     input[type="email"],
     input[type="date"],
     input[type="number"],
+    input[type="datetime-local"],
     select, 
     textarea {
         width: 300px; /* Fixed width, adjust as needed */
@@ -316,8 +319,8 @@ text-align: right; /* Right aligns the text in the label */
         border-radius: 4px;
         box-sizing: border-box;
     }
-
-input[type="submit"] {
+  /* Style for the submit button */
+#submitButton {
     background-color: #4CAF50; /* Green background for submit button */
     color: white; /* White text color for submit button */
     padding: 10px 20px;
@@ -326,9 +329,12 @@ input[type="submit"] {
     cursor: pointer;
 }
 
-input[type="submit"]:hover {
+/* Style for the submit button on hover */
+#submitButton:hover {
     background-color: #45a049; /* Darker green for hover effect */
 }
+
+
 
 
 
@@ -342,6 +348,7 @@ input[type="submit"]:hover {
             <span class="brand-text">CRIMELEON</span>
             <div class="header-links">
                 <a href="police.php">HOME</a>
+                <a href="index_police.html">MAP</a>
                 <a href="form.php">FORM</a>
                 <a href="record.php">RECORD</a>
                 <a href="about_p.php">ABOUT US</a>
@@ -376,9 +383,15 @@ input[type="submit"]:hover {
 <label for="datetime_reported">Date and Time Reported:</label>
 <input type="datetime-local" id="datetime_reported" name="datetime_reported" >
 
-<label for="place_of_incident">Place of Incident:</label>
-<input type="text" id="place_of_incident" name="place_of_incident" >
+<label for="places">Place of Incident:</label>
+<input type="text" id="places" name="places" >
 
+<label for="latitude">Latitude:</label>
+<input type="text" id="latitude" name="latitude" >
+
+<label for="longitude">Longitude:</label>
+<input type="text" id="longitude" name="longitude" >
+<a href="https://maps.app.goo.gl/WMEHLkdmJL2ADXSt8" target="_blank" style="color: white;">Map</a>
             
                     <!-- ITEM A  -->
     <h1>ITEM "A" - REPORTING PERSON</h1>
@@ -744,10 +757,16 @@ input[type="submit"]:hover {
         <input type="text" id="chief_head_of_office" name="chief_head_of_office" >
 
 
-        <input type="submit" value="Submit Suspect Data">
-        </body>
-        </html>
+    <form id="myForm" method="post">
+    
+    <button type="submit" id="submitButton">Submit</button>
+    </form>
 
+    <script>
+        document.getElementById('myForm').addEventListener('submit', function() {
+            document.getElementById('submitButton').disabled = true;
+        });
+    </script>
 
         </body>
         </html>
