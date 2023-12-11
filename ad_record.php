@@ -232,7 +232,53 @@ $conn->close();
         vertical-align: middle;
         }
 
-        
+        .content form {
+        display: flex;
+        align-items: center;
+        gap: 10px; /* Spacing between elements */
+    }
+
+    .content label {
+        margin-right: 5px;
+    }
+
+    .content input[type="text"] {
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    .content input[type="text"]:focus {
+        outline: none;
+        border-color: #0a2242;
+        box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+    }
+
+    .content button {
+        font-family: 'Lovelo', sans-serif;
+        padding: 8px 15px;
+        background-color: #0a2242; /* Green background */
+        color: white; /* White text */
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+    }
+
+    .content button:hover {
+        background-color: #174e97; /* Darker green on hover */
+    }
+
+    .content button[type="reset"] {
+        background-color: #0a2242; /* Red background for reset button */
+    }
+
+    .content button[type="reset"]:hover {
+        background-color: #174e97; /* Darker red on hover */
+    }
+
     
 
 
@@ -289,7 +335,7 @@ $conn->close();
             </tr>
             <?php foreach ($data as $row): ?>
                 <tr>
-                    <td style="color: <?php echo ($row['status'] == 'Approved') ? 'green' : (($row['status'] == 'Pending') ? 'yellow' : 'red'); ?>">
+                    <td style="color: <?php echo ($row['status'] == 'Approved') ? 'green' : (($row['status'] == 'Pending') ? 'orange' : 'red'); ?>">
                         <?php echo htmlspecialchars($row['status']); ?>
                     </td>
                     <td><?php echo htmlspecialchars($row["data_id"]); ?></td>
@@ -336,7 +382,7 @@ $conn->close();
             </tr>
             <?php foreach ($data as $row): ?>
              <tr>
-            <td style="color: <?php echo ($row['status'] == 'Approved') ? 'green' : (($row['status'] == 'Pending') ? 'yellow' : 'red'); ?>">
+            <td style="color: <?php echo ($row['status'] == 'Approved') ? 'green' : (($row['status'] == 'Pending') ? 'orange' : 'red'); ?>">
                 <?php echo htmlspecialchars($row['status']); ?>
             </td>
             <td><?php echo htmlspecialchars($row["data_id"]); ?></td>
@@ -422,7 +468,7 @@ $conn->close();
             </tr>
             <?php foreach ($data as $row): ?>
         <tr>
-            <td style="color: <?php echo ($row['status'] == 'Approved') ? 'green' : (($row['status'] == 'Pending') ? 'yellow' : 'red'); ?>">
+            <td style="color: <?php echo ($row['status'] == 'Approved') ? 'green' : (($row['status'] == 'Pending') ? 'orange' : 'red'); ?>">
                 <?php echo htmlspecialchars($row['status']); ?>
             </td>
             <td><?php echo htmlspecialchars($row["data_id"]); ?></td>
@@ -485,7 +531,7 @@ $conn->close();
             </tr>
             <?php foreach ($data as $row): ?>
         <tr>
-            <td style="color: <?php echo ($row['status'] == 'Approved') ? 'green' : (($row['status'] == 'Pending') ? 'yellow' : 'red'); ?>">
+            <td style="color: <?php echo ($row['status'] == 'Approved') ? 'green' : (($row['status'] == 'Pending') ? 'orange' : 'red'); ?>">
                 <?php echo htmlspecialchars($row['status']); ?>
             </td>
             <td><?php echo htmlspecialchars($row["data_id"]); ?></td>
@@ -533,7 +579,7 @@ $conn->close();
             </tr>
             <?php foreach ($data as $row): ?>
         <tr>
-            <td style="color: <?php echo ($row['status'] == 'Approved') ? 'green' : (($row['status'] == 'Pending') ? 'yellow' : 'red'); ?>">
+            <td style="color: <?php echo ($row['status'] == 'Approved') ? 'green' : (($row['status'] == 'Pending') ? 'orange' : 'red'); ?>">
                 <?php echo htmlspecialchars($row['status']); ?>
             </td>
             <td>
@@ -584,7 +630,7 @@ $conn->close();
             </tr>
             <?php foreach ($data as $row): ?>
                 <tr>
-                    <td style="color: <?php echo ($row['status'] == 'Approved') ? 'green' : (($row['status'] == 'Pending') ? 'yellow' : 'red'); ?>">
+                    <td style="color: <?php echo ($row['status'] == 'Approved') ? 'green' : (($row['status'] == 'Pending') ? 'orange' : 'red'); ?>">
                     <?php echo htmlspecialchars($row['status']); ?>
                      </td>
                     <td><?php echo htmlspecialchars($row["data_id"]); ?></td>

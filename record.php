@@ -230,7 +230,7 @@ $conn->close();
         vertical-align: middle;
         }
 
-        .content form {
+    .content form {
         display: flex;
         align-items: center;
         gap: 10px; /* Spacing between elements */

@@ -158,15 +158,19 @@ $stmt->bind_param("ssssssssiisssssssssssssssssssssssssiissssssssssssssssssssssss
   $longitude = $_POST['longitude'];
 
  
-if (!$stmt->execute()) {
- echo "Error: " . $stmt->error;
- } else {
-     echo "New records created successfully";
- }
-            
-  $stmt->close();
-  $conn->close();
-        } ?>
+  if (!$stmt->execute()) {
+    $_SESSION['message'] = "Error: " . $stmt->error;
+    $_SESSION['message_type'] = 'error'; // Add a type for styling
+} else {
+    $_SESSION['message'] = "New records created successfully";
+    $_SESSION['message_type'] = 'success';
+}
+
+$stmt->close();
+$conn->close();
+
+    } 
+    ?>
 
   <!DOCTYPE html>
   <html>
@@ -321,6 +325,7 @@ text-align: right; /* Right aligns the text in the label */
     }
   /* Style for the submit button */
 #submitButton {
+    font-family: 'Lovelo', sans-serif;
     background-color: #4CAF50; /* Green background for submit button */
     color: white; /* White text color for submit button */
     padding: 10px 20px;
@@ -334,7 +339,26 @@ text-align: right; /* Right aligns the text in the label */
     background-color: #45a049; /* Darker green for hover effect */
 }
 
+.notification {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        padding: 10px;
+        box-shadow: 0px 2px 4px rgba(0,0,0,0.2);
+        z-index: 1000;
+    }
 
+    .notification.success {
+        background-color: #4CAF50; /* Green for success */
+        color: white;
+    }
+
+    .notification.error {
+        background-color: #f44336; /* Red for error */
+        color: white;
+    }
 
 
 
@@ -767,6 +791,27 @@ text-align: right; /* Right aligns the text in the label */
             document.getElementById('submitButton').disabled = true;
         });
     </script>
+
+<?php if (!empty($_SESSION['message'])): ?>
+    <div id="notification" class="notification <?php echo $_SESSION['message_type']; ?>">
+        <?php echo $_SESSION['message']; ?>
+    </div>
+    <?php unset($_SESSION['message']); unset($_SESSION['message_type']); ?>
+<?php endif; ?>
+
+<script>
+    window.onload = function() {
+        // Check if the notification element exists
+        var notification = document.getElementById('notification');
+        if (notification) {
+            // Set a timeout to hide the notification after 3 seconds
+            setTimeout(function() {
+                notification.style.display = 'none';
+            }, 2000);
+        }
+    };
+</script>
+
 
         </body>
         </html>

@@ -5,7 +5,7 @@ session_start();
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "crimeleon"; // Change this to your database name
+$dbname = "crimeleon2"; // Change this to your database name
 
 // Create a database connection
 $conn = new mysqli($servername, $username, $password, $dbname);
