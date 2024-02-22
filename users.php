@@ -1,43 +1,78 @@
 <?php
-session_start();
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Database connection details
+    $servername = "localhost";
+    $username = "root";
+    $password = "";
+    $dbname = "crimeleon2";
 
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "crimeleon2";
+    // Create connection
+    $conn = new mysqli($servername, $username, $password, $dbname);
 
+    // Check connection
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+    
+
+// Sanitize and prepare data
+$firstname = mysqli_real_escape_string($conn, $_POST['firstname']);
+$middlename = mysqli_real_escape_string($conn, $_POST['middlename']);
+$lastname = mysqli_real_escape_string($conn, $_POST['lastname']);
+$address = mysqli_real_escape_string($conn, $_POST['address']);
+$contact = mysqli_real_escape_string($conn, $_POST['contact']);
+$licensed_idno = mysqli_real_escape_string($conn, $_POST['licensed_idno']);
+$badge_no = mysqli_real_escape_string($conn, $_POST['badge_no']);
+$emailaddr = mysqli_real_escape_string($conn, $_POST['emailaddr']);
+$userType = mysqli_real_escape_string($conn, $_POST['userType']);
+$password = mysqli_real_escape_string($conn, $_POST['password']); 
+
+// Hash the password
+$hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
+// Insert into employee table
+$employee_sql = "INSERT INTO employee (firstname, middlename, lastname, address, contact, licensed_idno, badge_no) VALUES ('$firstname', '$middlename', '$lastname', '$address', '$contact', '$licensed_idno', '$badge_no')";
+if ($conn->query($employee_sql) === TRUE) {
+    $empNo = $conn->insert_id; // Get the auto-generated empNo
+
+    // Insert into users table with hashed password
+    $users_sql = "INSERT INTO users (empNo, emailaddr, userType, password) VALUES ('$empNo', '$emailaddr', '$userType', '$hashed_password')";
+    if ($conn->query($users_sql) === TRUE) {
+        // Success! You might want to redirect or output a success message
+    } else {
+        // Handle error in inserting into users table
+        echo "Error: " . $conn->error;
+    }
+} else {
+    // Handle error in inserting into employee table
+    echo "Error: " . $conn->error;
+}
+
+$conn->close();
+}
+
+ // Database connection details
+ $servername = "localhost";
+ $username = "root";
+ $password = "";
+ $dbname = "crimeleon2";
+
+// Reopen the connection for fetching registered users
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'Admin') {
-    header("Location: login.php");
-    exit();
-}
-
-if (isset($_POST['signup'])) {
-    if ($_POST['password'] !== $_POST['confirm_password']) {
-        echo "Passwords do not match!";
-        return; // stop the script from proceeding further
-    }   
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
 
 
-if (isset($_POST['signup'])) {
-    $sql = "INSERT INTO users (firstname, middlename, lastname, address, contact, licensed_idno, position, gov_email, password, badge_no, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
-    
-    $stmt = $conn->prepare($sql);
-    $hashedPassword = password_hash($_POST['password'], PASSWORD_DEFAULT);
-    
-    $stmt->bind_param("ssssssssss", $_POST['firstname'], $_POST['middlename'], $_POST['lastname'], $_POST['address'], $_POST['contact'], $_POST['licensed_idno'], $_POST['position'], $_POST['gov_email'], $hashedPassword, $_POST['badge_no']);
-
-    if ($stmt->execute()) {
-        echo "User registration successful.";
-    } else {
-        echo "Error: " . $stmt->error;
-    }
-
-    $stmt->close();
-}
+// Fetch registered users
+$sql = "SELECT e.empNo, e.firstname, e.middlename, e.lastname, e.address, e.contact, e.licensed_idno, e.badge_no, u.emailaddr, u.userType 
+        FROM employee e 
+        JOIN users u ON e.empNo = u.empNo";
+$result = $conn->query($sql);
 ?>
+
 
 <!DOCTYPE html>
 <html>
@@ -157,7 +192,7 @@ if (isset($_POST['signup'])) {
         }
 
         .content {
-            max-width: 800px;
+            max-width: 1000px;
             margin: 40px auto;
             background: #c3d1e9;
             padding: 20px;
@@ -168,12 +203,14 @@ if (isset($_POST['signup'])) {
         .content h2, .content h3 {
             color: #0a2242;
             border-bottom: 2px solid #e0e0e0;
-            padding-bottom: 10px;
+            padding-bottom: 20px;
             margin-bottom: 20px;
         }
 
+        
+
         table {
-            width: 100%;
+            width: 80%;
             border-collapse: collapse;
             margin-bottom: 20px;
         }
@@ -183,7 +220,7 @@ if (isset($_POST['signup'])) {
         }
 
         th, td {
-            padding: 10px;
+            padding: 5px;
             text-align: left;
         }
 
@@ -258,7 +295,7 @@ if (isset($_POST['signup'])) {
         <a href="users.php">USERS</a>
         <a href="ad_record.php">RECORD</a>
         <a href="about_a.php">ABOUT US</a>
-        <span class="user-name"><?php echo htmlspecialchars($_SESSION['firstname'] . " " . $_SESSION['lastname']); ?></span>
+   
         <div class="dropdown">
             <img src="logout.png" alt="Logout Icon" style="cursor: pointer; width: 50px; height: 50px;">
             <div class="dropdown-content">
@@ -269,76 +306,80 @@ if (isset($_POST['signup'])) {
 </div>
 
     <div class="content">
-        <h2>User Management</h2>
 
-        <!-- Display User List -->
-        <h3>User List</h3>
-        <table>
+    <h2>Registered Users</h2>
+    <?php if ($result->num_rows > 0): ?>
+        <table border="1">
             <tr>
-                <th>ID</th>
-                <th>Name</th>
+                <th>Emp No</th>
+                <th>First Name</th>
+                <th>Middle Name</th>
+                <th>Last Name</th>
+                <th>Address</th>
+                <th>Contact</th>
+                <th>License ID No</th>
+                <th>Badge No</th>
                 <th>Email</th>
-                <th>Created</th>
-                <th>Action</th>
+                <th>User Type</th>
             </tr>
-            <?php
-            $sql = "SELECT id, CONCAT(firstname, ' ', middlename, ' ', lastname) as name, gov_email, created_at FROM users";
-            $result = $conn->query($sql);
-
-            if ($result->num_rows > 0) {
-                while ($row = $result->fetch_assoc()) {
-                    echo "<tr>";
-                    echo "<td>" . $row["id"] . "</td>";
-                    echo "<td>" . $row["name"] . "</td>";
-                    echo "<td>" . $row["gov_email"] . "</td>";
-                    echo "<td>" . $row["created_at"] . "</td>";
-                    echo "<td><a href='edit_user.php?id=" . $row["id"] . "'>Edit</a> | <a href='delete_user.php?id=" . $row["id"] . "'>Delete</a></td>";
-                    echo "</tr>";
-                }
-            } else {
-                echo "<tr><td colspan='5'>No users found.</td></tr>";
-            }
-            ?>
+            <?php while($row = $result->fetch_assoc()): ?>
+                <tr>
+                    <td><?php echo $row["empNo"]; ?></td>
+                    <td><?php echo $row["firstname"]; ?></td>
+                    <td><?php echo $row["middlename"]; ?></td>
+                    <td><?php echo $row["lastname"]; ?></td>
+                    <td><?php echo $row["address"]; ?></td>
+                    <td><?php echo $row["contact"]; ?></td>
+                    <td><?php echo $row["licensed_idno"]; ?></td>
+                    <td><?php echo $row["badge_no"]; ?></td>
+                    <td><?php echo $row["emailaddr"]; ?></td>
+                    <td><?php echo $row["userType"]; ?></td>
+                </tr>
+            <?php endwhile; ?>
         </table>
+    <?php else: ?>
+        <p>No registered users found.</p>
+    <?php endif; ?>
+    <?php $conn->close(); ?>
 
-        <!-- User Creation Form -->
-        <h3>Create New User</h3>
-        <form method="post" action="">
-            <label>First Name:</label>
-            <input type="text" name="firstname" required>
+    <h1>User Registration</h1>
+    <form action="users.php" method="post">
+        <label for="firstname">First Name:</label>
+        <input type="text" name="firstname" required><br>
 
-            <label>Middle Name:</label>
-            <input type="text" name="middlename">
+        <label for="middlename">Middle Name:</label>
+        <input type="text" name="middlename"><br>
 
-            <label>Last Name:</label>
-            <input type="text" name="lastname" required>
+        <label for="lastname">Last Name:</label>
+        <input type="text" name="lastname" required><br>
 
-            <label>Address:</label>
-            <input type="text" name="address" required>
+        <label for="address">Address:</label>
+        <input type="text" name="address" required><br>
 
-            <label>Contact:</label>
-            <input type="text" name="contact" required>
+        <label for="contact">Contact:</label>
+        <input type="text" name="contact" required><br>
 
-            <label>Licensed ID Number:</label>
-            <input type="text" name="licensed_idno" required>
+        <label for="licensed_idno">Licensed ID No:</label>
+        <input type="text" name="licensed_idno" required><br>
 
-            <label>Position:</label>
-            <input type="text" name="position" required>
+        <label for="badge_no">Badged No:</label>
+        <input type="text" name="badge_no" required><br>
 
-            <label>Government Email:</label>
-            <input type="email" name="gov_email" required>
+        <label for="emailaddr">Email:</label>
+        <input type="email" name="emailaddr" required><br>
 
-            <label>Password:</label>
-            <input type="password" name="password" required>
+        <label for="userType">User Type:</label>
+        <select name="userType">
+            <option value="admin">Admin</option>
+            <option value="police">Police</option>
+            <option value="investigator">Investigator</option>
+        </select><br>
 
-            <label>Confirm Password:</label>
-            <input type="password" name="confirm_password" required>
+        <label for="password">Password:</label>
+        <input type="password" name="password" required><br>
 
-            <label>Badge Number:</label>
-            <input type="text" name="badge_no" required>
-
-            <button type="submit" name="signup">Create User</button>
-        </form>
+        <input type="submit" value="Register">
+    </form>
     </div>
 </body>
 </html>

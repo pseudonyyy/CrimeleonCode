@@ -1,41 +1,11 @@
 <?php
 session_start();
 
-// Check if the user is logged in and is a Police
-if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'Police') {
-    header("Location: login.php");
+// Redirect user to login page if they're not logged in or not an admin
+if (!isset($_SESSION['userType']) || $_SESSION['userType'] != 'police') {
+    header('Location: login.php');
     exit();
 }
-
-// Include your database connection details here
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "crimeleon2";
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
-// Fetch latitude and longitude from your report table
-// $sql = "SELECT latit, lng FROM report";
-// $result = $conn->query($sql);
-
-// $locations = array();
-
-// if ($result->num_rows > 0) {
-//     while($row = $result->fetch_assoc()) {
-//         $locations[] = array("lat" => floatval($row["lat"]), "lng" => floatval($row["lng"]));
-//     }
-// } else {
-//     echo "0 results";
-// }
-$conn->close();
-
 ?>
 
 <!DOCTYPE html>
@@ -230,29 +200,6 @@ $conn->close();
         <h3>Police</h3>
     </div>
 </section>
-
-
-<!-- <div class="map-container">
-<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31361.61802420642!2d122.55727460274082!3d10.718877870449328!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33aee508bcc075c3%3A0x7f47e3a00fc75b26!2sLa%20Paz%2C%20Iloilo%20City%2C%20Iloilo!5e0!3m2!1sen!2sph!4v1700481049992!5m2!1sen!2sph" width="1000" height="800" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-</div> -->
-
-<!-- <script>
-function initMap() {
-    var map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 12,
-        center: {lat: 10.718893381904664, lng: 122.57889397182652} // Replace with the center of your area
-    });
-
-    var locations = <?php echo json_encode($locations); ?>;
-    locations.forEach(function(location) {
-        new google.maps.Marker({        
-            position: new google.maps.LatLng(location.lat, location.lng),
-            map: map,
-            title: 'Crime reported here'
-        });
-    });
-} -->
-</script>
 
 
 

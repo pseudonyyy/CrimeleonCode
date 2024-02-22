@@ -14,7 +14,7 @@ if ($conn->connect_error) {
 }
 
 // SQL to fetch data from database
-$sql = "SELECT * FROM report";
+$sql = "SELECT * FROM itema,itemb,itemc,itemd";
 $result = $conn->query($sql);
 
 // Store the results in a variable for later use
@@ -69,6 +69,9 @@ $conn->close();
 <html>
 <head>
     <title>CRIMELEON - User Management</title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <style>
         @import url('https://fonts.cdnfonts.com/css/lovelo?styles=25962');
     </style>
@@ -183,13 +186,14 @@ $conn->close();
         }
 
         .content {
-            max-width: 1900px;
-            margin: 40px auto;
-            background: #c3d1e9;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
+    max-width: 100%;
+    margin: 40px auto;
+    background: #c3d1e9;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    overflow-x: auto; /* Enables horizontal scrolling */
+}
 
         .content h2, .content h3 {
             color: #0a2242;
@@ -199,19 +203,24 @@ $conn->close();
         }
 
         table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 10px;
-        }
+    width: 100%;
+    table-layout: fixed; /* Ensures columns have fixed width */
+    border-collapse: collapse;
+    margin-bottom: 10px;
+}
 
         table, th, td {
             border: 1px solid #e0e0e0;
         }
 
         th, td {
-            padding: 10px;
-            text-align: left;
-        }
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #e0e0e0;
+    overflow: hidden; /* Hides overflowed content */
+    text-overflow: ellipsis; /* Shows '...' for overflowed content */
+    white-space: nowrap; /* Prevents text from wrapping to the next line */
+}
 
         th {
             background-color: #0a2242;
@@ -230,7 +239,7 @@ $conn->close();
         vertical-align: middle;
         }
 
-    .content form {
+        .content form {
         display: flex;
         align-items: center;
         gap: 10px; /* Spacing between elements */
@@ -277,6 +286,8 @@ $conn->close();
         background-color: #174e97; /* Darker red on hover */
     }
 
+    
+
 
     </style>
 </head>
@@ -285,11 +296,11 @@ $conn->close();
     <img src="logo2.png" alt="Logo">
     <span class="brand-text">CRIMELEON</span>
     <div class="header-links">
-        <a href="police.php">HOME</a>
-        <a href="index_police.html">MAP</a>
-        <a href="form.php">FORM</a>
-        <a href="record.php">RECORD</a>
-        <a href="about_p.php">ABOUT US</a>
+        <a href="admin.php">HOME</a> 
+        <a href="index_admin.html">MAP</a>
+        <a href="users.php">USERS</a> 
+        <a href="ad_record.php">RECORD</a>
+        <a href="about_a.php">ABOUT US</a>
         <span class="user-name"><?php echo htmlspecialchars($_SESSION['firstname'] . " " . $_SESSION['lastname']); ?></span>
         <div class="dropdown">
             <img src="logout.png" alt="Logout Icon" style="cursor: pointer; width: 50px; height: 50px;">
@@ -319,10 +330,12 @@ $conn->close();
 <div class="content">
     <?php if ($data): ?>
 
+
+<div class="content">
         <h2>RECORDS</h2>
         <table border='1'>
             <tr>
-                <th></th>
+                <th>Status</th>
                 <th>Data ID</th>
                 <th>Type of Incident</th>
                 <th>Datetime of Incident</th>
@@ -331,8 +344,8 @@ $conn->close();
             </tr>
             <?php foreach ($data as $row): ?>
                 <tr>
-                    <td>
-                    <a href="edit.php?id=<?php echo $row['data_id']; ?>">Edit</a>
+                    <td style="color: <?php echo ($row['status'] == 'Approved') ? 'green' : (($row['status'] == 'Pending') ? 'orange' : 'red'); ?>">
+                        <?php echo htmlspecialchars($row['status']); ?>
                     </td>
                     <td><?php echo htmlspecialchars($row["data_id"]); ?></td>
                     <td><?php echo htmlspecialchars($row["type_of_incident"]); ?></td>
@@ -342,276 +355,289 @@ $conn->close();
                 </tr>
             <?php endforeach; ?>
         </table>
+        </div>
 
+
+<div class="content">
         <h2>ITEM "A" - REPORTING PERSON</h2>
         <table border='1'>
             <tr>    
-                <th></th>
-                <th>Data ID</th>
-                <th>Family Name</th>
-                <th>First Name</th>
-                <th>Middle Name</th>
-                <th>Qualifier</th>
-                <th>Nickname</th>
-                <th>Citizenship</th>
-                <th>Gender</th>
-                <th>Civil Status</th>
-                <th>Date of Birth</th>
-                <th>Age</th>
-                <th>Place Of Birth</th>
-                <th>Home Phone</th>
-                <th>Mobile Phone</th>
-                <th>Current Address</th>
-                <th>Village Sitio Current</th>
-                <th>Barangay Current</th>
-                <th>Town City Current</th>
-                <th>Province Current</th>
-                <th>Other Address</th>
-                <th>Village Sitio Other</th>
-                <th>Barangay Other</th>
-                <th>Town City Other</th>
-                <th>Province Other</th>
-                <th>Highest Educational Attainment</th>
-                <th>Occupation</th>
-                <th>Id Card Presented</th>
-                <th>Email Address</th>
+        <th>Status</th>  
+        <th>Data ID</th>
+        <th>Family Name</th>
+        <th>First Name</th>
+        <th>Middle Name</th>
+        <th>Qualifier</th>
+        <th>Nickname</th>
+        <th>Citizenship</th>
+        <th>Gender</th>
+        <th>Civil Status</th>
+        <th>Date of Birth</th>
+        <th>Age</th>
+        <th>Place Of Birth</th>
+        <th>Home Phone</th>
+        <th>Mobile Phone</th>
+        <th>Current Address</th>
+        <th>Village Sitio Current</th>
+        <th>Barangay Current</th>
+        <th>Town City Current</th>
+        <th>Province Current</th>
+        <th>Other Address</th>
+        <th>Village Sitio Other</th>
+        <th>Barangay Other</th>
+        <th>Town City Other</th>
+        <th>Province Other</th>
+        <th>Highest Educational Attainment</th>
+        <th>Occupation</th>
+        <th>Id Card Presented</th>
+        <th>Email Address</th>
             </tr>
             <?php foreach ($data as $row): ?>
-                
-                <tr>
-                    <td>
-                    <a href="edit.php?id=<?php echo $row['data_id']; ?>">Edit</a>
-                    </td>
-                    <td><?php echo htmlspecialchars($row["data_id"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["a_family_name"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["a_first_name"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["a_middle_name"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["a_qualifier"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["a_nickname"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["a_citizenship"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["a_gender"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["a_civil_status"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["a_date_of_birth"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["a_age"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["a_place_of_birth"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["a_home_phone"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["a_mobile_phone"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["a_current_address"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["a_village_sitio_current"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["a_barangay_current"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["a_town_city_current"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["a_province_current"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["a_other_address"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["a_village_sitio_other"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["a_barangay_other"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["a_town_city_other"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["a_province_other"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["a_highest_educational_attainment"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["a_occupation"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["a_id_card_presented"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["a_email_address"]); ?></td>
-                </tr>
+             <tr>
+            <td style="color: <?php echo ($row['status'] == 'Approved') ? 'green' : (($row['status'] == 'Pending') ? 'orange' : 'red'); ?>">
+                <?php echo htmlspecialchars($row['status']); ?>
+            </td>
+            <td><?php echo htmlspecialchars($row["data_id"]); ?></td>
+            <td><?php echo htmlspecialchars($row["a_family_name"]); ?></td>
+            <td><?php echo htmlspecialchars($row["a_first_name"]); ?></td>
+            <td><?php echo htmlspecialchars($row["a_middle_name"]); ?></td>
+            <td><?php echo htmlspecialchars($row["a_qualifier"]); ?></td>
+            <td><?php echo htmlspecialchars($row["a_nickname"]); ?></td>
+            <td><?php echo htmlspecialchars($row["a_citizenship"]); ?></td>
+            <td><?php echo htmlspecialchars($row["a_gender"]); ?></td>
+            <td><?php echo htmlspecialchars($row["a_civil_status"]); ?></td>
+            <td><?php echo htmlspecialchars($row["a_date_of_birth"]); ?></td>
+            <td><?php echo htmlspecialchars($row["a_age"]); ?></td>
+            <td><?php echo htmlspecialchars($row["a_place_of_birth"]); ?></td>
+            <td><?php echo htmlspecialchars($row["a_home_phone"]); ?></td>
+            <td><?php echo htmlspecialchars($row["a_mobile_phone"]); ?></td>
+            <td><?php echo htmlspecialchars($row["a_current_address"]); ?></td>
+            <td><?php echo htmlspecialchars($row["a_village_sitio_current"]); ?></td>
+            <td><?php echo htmlspecialchars($row["a_barangay_current"]); ?></td>
+            <td><?php echo htmlspecialchars($row["a_town_city_current"]); ?></td>
+            <td><?php echo htmlspecialchars($row["a_province_current"]); ?></td>
+            <td><?php echo htmlspecialchars($row["a_other_address"]); ?></td>
+            <td><?php echo htmlspecialchars($row["a_village_sitio_other"]); ?></td>
+            <td><?php echo htmlspecialchars($row["a_barangay_other"]); ?></td>
+            <td><?php echo htmlspecialchars($row["a_town_city_other"]); ?></td>
+            <td><?php echo htmlspecialchars($row["a_province_other"]); ?></td>
+            <td><?php echo htmlspecialchars($row["a_highest_educational_attainment"]); ?></td>
+            <td><?php echo htmlspecialchars($row["a_occupation"]); ?></td>
+            <td><?php echo htmlspecialchars($row["a_id_card_presented"]); ?></td>
+            <td><?php echo htmlspecialchars($row["a_email_address"]); ?></td>
+        </tr>
             <?php endforeach; ?>
         </table>
+        </div>
+
+
+        <div class="content">
 
         <h2>ITEM “B” – SUSPECT’S DATA </h2>
         <table border='1'>
             <tr> 
-                <th></th>   
-                <th>Data ID</th>
-                <th>Family Name</th>
-                <th>First Name</th>
-                <th>Middle Name</th>
-                <th>Qualifier</th>
-                <th>Nickname</th>
-                <th>Citizenship</th>
-                <th>Gender</th>
-                <th>Civil Status</th>
-                <th>Date of Birth</th>
-                <th>Age</th>
-                <th>Place Of Birth</th>
-                <th>Home Phone</th>
-                <th>Mobile Phone</th>
-                <th>Current Address</th>
-                <th>Village Sitio Current</th>
-                <th>Barangay Current</th>
-                <th>Town City Current</th>
-                <th>Province Current</th>
-                <th>Other Address</th>
-                <th>Village Sitio Other</th>
-                <th>Barangay Other</th>
-                <th>Town City Other</th>
-                <th>Province Other</th>
-                <th>Highest Educational Attainment</th>
-                <th>Occupation</th>
-                <th>Id Card Presented</th>
-                <th>Email Address</th>
-                <th>Rank</th>
-                <th>Unit Assignment</th>
-                <th>Group Affiliation</th>
-                <th>Criminal_record</th>
-                <th>Status of Previous Case</th>
-                <th>Height</th>
-                <th>Weight</th>
-                <th>Built</th>
-                <th>Color of Eyes</th>
-                <th>Description of Eyes</th>
-                <th>Color of Hair</th>
-                <th>Description of Hair</th>
-                <th>Guardian Name</th>
-                <th>Guardian Address</th>
-                <th>Guardian Home Phone</th>
-                <th>Guardian Mobile Phone</th>
+        <th>Status</th>     
+        <th>Data ID</th>
+        <th>Family Name</th>
+        <th>First Name</th>
+        <th>Middle Name</th>
+        <th>Qualifier</th>
+        <th>Nickname</th>
+        <th>Citizenship</th>
+        <th>Gender</th>
+        <th>Civil Status</th>
+        <th>Date of Birth</th>
+        <th>Age</th>
+        <th>Place Of Birth</th>
+        <th>Home Phone</th>
+        <th>Mobile Phone</th>
+        <th>Current Address</th>
+        <th>Village Sitio Current</th>
+        <th>Barangay Current</th>
+        <th>Town City Current</th>
+        <th>Province Current</th>
+        <th>Other Address</th>
+        <th>Village Sitio Other</th>
+        <th>Barangay Other</th>
+        <th>Town City Other</th>
+        <th>Province Other</th>
+        <th>Highest Educational Attainment</th>
+        <th>Occupation</th>
+        <th>Id Card Presented</th>
+        <th>Email Address</th>
+        <th>Rank</th>
+        <th>Unit Assignment</th>
+        <th>Group Affiliation</th>
+        <th>Criminal_record</th>
+        <th>Status of Previous Case</th>
+        <th>Height</th>
+        <th>Weight</th>
+        <th>Built</th>
+        <th>Color of Eyes</th>
+        <th>Description of Eyes</th>
+        <th>Color of Hair</th>
+        <th>Description of Hair</th>
+        <th>Guardian Name</th>
+        <th>Guardian Address</th>
+        <th>Guardian Home Phone</th>
+        <th>Guardian Mobile Phone</th>
             </tr>
             <?php foreach ($data as $row): ?>
-                <tr>
-                    <td>
-                    <a href="edit.php?id=<?php echo $row['data_id']; ?>">Edit</a>
-                    </td>
-                    <td><?php echo htmlspecialchars($row["data_id"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_family_name"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_first_name"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_middle_name"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_qualifier"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_nickname"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_citizenship"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_gender"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_civil_status"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_date_of_birth"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_age"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_place_of_birth"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_home_phone"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_mobile_phone"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_current_address"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_village_sitio_current"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_barangay_current"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_town_city_current"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_province_current"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_other_address"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_village_sitio_other"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_barangay_other"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_town_city_other"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_province_other"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_highest_educational_attainment"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_occupation"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_id_card_presented"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_email_address"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_rank"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_unit_assignment"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_group_affiliation"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_criminal_record"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_status_of_previous_case"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_height"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_weight"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_built"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_color_of_eyes"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_description_of_eyes"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_color_of_hair"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_description_of_hair"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_guardian_name"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_guardian_address"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_guardian_home_phone"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_guardian_mobile_phone"]); ?></td>
-                </tr>
+        <tr>
+            <td style="color: <?php echo ($row['status'] == 'Approved') ? 'green' : (($row['status'] == 'Pending') ? 'orange' : 'red'); ?>">
+                <?php echo htmlspecialchars($row['status']); ?>
+            </td>
+            <td><?php echo htmlspecialchars($row["data_id"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_family_name"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_first_name"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_middle_name"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_qualifier"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_nickname"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_citizenship"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_gender"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_civil_status"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_date_of_birth"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_age"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_place_of_birth"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_home_phone"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_mobile_phone"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_current_address"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_village_sitio_current"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_barangay_current"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_town_city_current"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_province_current"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_other_address"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_village_sitio_other"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_barangay_other"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_town_city_other"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_province_other"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_highest_educational_attainment"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_occupation"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_id_card_presented"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_email_address"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_rank"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_unit_assignment"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_group_affiliation"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_criminal_record"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_status_of_previous_case"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_height"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_weight"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_built"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_color_of_eyes"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_description_of_eyes"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_color_of_hair"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_description_of_hair"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_guardian_name"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_guardian_address"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_guardian_home_phone"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_guardian_mobile_phone"]); ?></td>
+        </tr>
             <?php endforeach; ?>
         </table>
+        </div>
+
+        
 
         <h2>FOR CHILDREN IN CONFLICT WITH THE LAW </h2>
         <table border='1'>
             <tr> 
-                <th></th>   
-                <th>Data ID</th>
-                <th>Guardian Name</th>
-                <th>Guardian Address</th>
-                <th>Guardian Home Phone</th>
-                <th>Guardian Mobile Phone</th>
+        <th>Status</th>
+        <th>Data ID</th>
+        <th>Guardian Name</th>
+        <th>Guardian Address</th>
+        <th>Guardian Home Phone</th>
+        <th>Guardian Mobile Phone</th>
             </tr>
             <?php foreach ($data as $row): ?>
-                <tr>
-                    <td>
-                    <a href="edit.php?id=<?php echo $row['data_id']; ?>">Edit</a>
-                    </td>
-                    <td><?php echo htmlspecialchars($row["data_id"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_guardian_name"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_guardian_address"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_guardian_home_phone"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["b_guardian_mobile_phone"]); ?></td>
-                </tr>
+        <tr>
+            <td style="color: <?php echo ($row['status'] == 'Approved') ? 'green' : (($row['status'] == 'Pending') ? 'orange' : 'red'); ?>">
+                <?php echo htmlspecialchars($row['status']); ?>
+            </td>
+            <td><?php echo htmlspecialchars($row["data_id"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_guardian_name"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_guardian_address"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_guardian_home_phone"]); ?></td>
+            <td><?php echo htmlspecialchars($row["b_guardian_mobile_phone"]); ?></td>
+        </tr>
             <?php endforeach; ?>
         </table>
 
-
+        <div class="content">
          <h2>ITEM “C” – VICTIM’S DATA</h2>
         <table border='1'>
             <tr> 
-                <th></th>   
-                <th>Data ID</th>
-                <th>Family Name</th>
-                <th>First Name</th>
-                <th>Middle Name</th>
-                <th>Qualifier</th>
-                <th>Nickname</th>
-                <th>Citizenship</th>
-                <th>Gender</th>
-                <th>Civil Status</th>
-                <th>Date of Birth</th>
-                <th>Age</th>
-                <th>Place Of Birth</th>
-                <th>Home Phone</th>
-                <th>Mobile Phone</th>
-                <th>Current Address</th>
-                <th>Village Sitio Current</th>
-                <th>Barangay Current</th>
-                <th>Town City Current</th>
-                <th>Province Current</th>
-                <th>Other Address</th>
-                <th>Village Sitio Other</th>
-                <th>Barangay Other</th>
-                <th>Town City Other</th>
-                <th>Province Other</th>
-                <th>Highest Educational Attainment</th>
-                <th>Occupation</th>
-                <th>Id Card Presented</th>
-                <th>Email Address</th>
+        <th>Status</th>  
+        <th>Data ID</th>
+        <th>Family Name</th>
+        <th>First Name</th>
+        <th>Middle Name</th>
+        <th>Qualifier</th>
+        <th>Nickname</th>
+        <th>Citizenship</th>
+        <th>Gender</th>
+        <th>Civil Status</th>
+        <th>Date of Birth</th>
+        <th>Age</th>
+        <th>Place Of Birth</th>
+        <th>Home Phone</th>
+        <th>Mobile Phone</th>
+        <th>Current Address</th>
+        <th>Village Sitio Current</th>
+        <th>Barangay Current</th>
+        <th>Town City Current</th>
+        <th>Province Current</th>
+        <th>Other Address</th>
+        <th>Village Sitio Other</th>
+        <th>Barangay Other</th>
+        <th>Town City Other</th>
+        <th>Province Other</th>
+        <th>Highest Educational Attainment</th>
+        <th>Occupation</th>
+        <th>Id Card Presented</th>
+        <th>Email Address</th>
             </tr>
             <?php foreach ($data as $row): ?>
-                <tr>
-                <td>
-                    <a href="edit.php?id=<?php echo $row['data_id']; ?>">Edit</a>
-                    </td>
-                    <td><?php echo htmlspecialchars($row["data_id"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["c_family_name"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["c_first_name"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["c_middle_name"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["c_qualifier"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["c_nickname"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["c_citizenship"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["c_gender"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["c_civil_status"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["c_date_of_birth"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["c_age"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["c_place_of_birth"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["c_home_phone"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["c_mobile_phone"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["c_current_address"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["c_village_sitio_current"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["c_barangay_current"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["c_town_city_current"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["c_province_current"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["c_other_address"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["c_village_sitio_other"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["c_barangay_other"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["c_town_city_other"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["c_province_other"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["c_highest_educational_attainment"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["c_occupation"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["c_id_card_presented"]); ?></td>
-                    <td><?php echo htmlspecialchars($row["c_email_address"]); ?></td>
+        <tr>
+            <td style="color: <?php echo ($row['status'] == 'Approved') ? 'green' : (($row['status'] == 'Pending') ? 'orange' : 'red'); ?>">
+                <?php echo htmlspecialchars($row['status']); ?>
+            </td>
+            <td>
+            <td><?php echo htmlspecialchars($row["data_id"]); ?></td>
+            <td><?php echo htmlspecialchars($row["c_family_name"]); ?></td>
+            <td><?php echo htmlspecialchars($row["c_first_name"]); ?></td>
+            <td><?php echo htmlspecialchars($row["c_middle_name"]); ?></td>
+            <td><?php echo htmlspecialchars($row["c_qualifier"]); ?></td>
+            <td><?php echo htmlspecialchars($row["c_nickname"]); ?></td>
+            <td><?php echo htmlspecialchars($row["c_citizenship"]); ?></td>
+            <td><?php echo htmlspecialchars($row["c_gender"]); ?></td>
+            <td><?php echo htmlspecialchars($row["c_civil_status"]); ?></td>
+            <td><?php echo htmlspecialchars($row["c_date_of_birth"]); ?></td>
+            <td><?php echo htmlspecialchars($row["c_age"]); ?></td>
+            <td><?php echo htmlspecialchars($row["c_place_of_birth"]); ?></td>
+            <td><?php echo htmlspecialchars($row["c_home_phone"]); ?></td>
+            <td><?php echo htmlspecialchars($row["c_mobile_phone"]); ?></td>
+            <td><?php echo htmlspecialchars($row["c_current_address"]); ?></td>
+            <td><?php echo htmlspecialchars($row["c_village_sitio_current"]); ?></td>
+            <td><?php echo htmlspecialchars($row["c_barangay_current"]); ?></td>
+            <td><?php echo htmlspecialchars($row["c_town_city_current"]); ?></td>
+            <td><?php echo htmlspecialchars($row["c_province_current"]); ?></td>
+            <td><?php echo htmlspecialchars($row["c_other_address"]); ?></td>
+            <td><?php echo htmlspecialchars($row["c_village_sitio_other"]); ?></td>
+            <td><?php echo htmlspecialchars($row["c_barangay_other"]); ?></td>
+            <td><?php echo htmlspecialchars($row["c_town_city_other"]); ?></td>
+            <td><?php echo htmlspecialchars($row["c_province_other"]); ?></td>
+            <td><?php echo htmlspecialchars($row["c_highest_educational_attainment"]); ?></td>
+            <td><?php echo htmlspecialchars($row["c_occupation"]); ?></td>
+            <td><?php echo htmlspecialchars($row["c_id_card_presented"]); ?></td>
+            <td><?php echo htmlspecialchars($row["c_email_address"]); ?></td>
                     <td>
                 </tr>
             <?php endforeach; ?>
         </table>
+        </div>
 
+
+        <div class="content">
         <h2>ITEM “D” – NARRATIVE </h2>
         <table border='1'>
             <tr> 
@@ -627,9 +653,9 @@ $conn->close();
             </tr>
             <?php foreach ($data as $row): ?>
                 <tr>
-                    <td>
-                    <a href="edit.php?id=<?php echo $row['data_id']; ?>">Edit</a>
-                    </td>
+                    <td style="color: <?php echo ($row['status'] == 'Approved') ? 'green' : (($row['status'] == 'Pending') ? 'orange' : 'red'); ?>">
+                    <?php echo htmlspecialchars($row['status']); ?>
+                     </td>
                     <td><?php echo htmlspecialchars($row["data_id"]); ?></td>
                     <td><?php echo htmlspecialchars($row["narrative"]); ?></td>
                     <td><?php echo htmlspecialchars($row["administering_officer"]); ?></td>
@@ -641,10 +667,21 @@ $conn->close();
                 </tr>
             <?php endforeach; ?>
         </table>
+        </div>
     <?php else: ?>
         <p>No results found.</p>
     <?php endif; ?>
 </div>
+    <!-- Script to make table headers resizable -->
+    <script>
+        $(document).ready(function() {
+            // Make table headers resizable.
+            $('th').resizable({
+                handles: 'e', // Enable resizing on the east side (right side) of the header
+                minWidth: 50 // Minimum width of the column
+            });
+        });
+    </script>
 
-</head>
-<body>
+    </body>
+</html>

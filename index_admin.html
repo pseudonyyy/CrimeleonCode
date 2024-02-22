@@ -136,20 +136,6 @@
             gradient: customGradient
         }).addTo(map);
 
-    </script>
-    
-
-    <!-- back button  -->
-    <script>
-        document.getElementById('goBackButton').addEventListener('click', function() {
-            window.location.href = 'admin.php'; // Modify this URL as needed
-        });
-    </script>
-    
-
-    <!-- Fetch Data and Add Markers -->
-    <script>
-
         // Define the custom small icon
 
         var redIcon = L.icon({
@@ -161,11 +147,11 @@
 
         var smallIcon = L.icon({
             iconUrl: 'blueicon.png',
-            iconSize: [30, 35], // size of the icon (half of the default size)
-            iconAnchor: [13.25, 30.5], // point of the icon which will correspond to marker's location
-            popupAnchor: [0, -20.5] // point from which the popup should open relative to the iconAnchor
-        
+            iconSize: [20, 28],
+            iconAnchor: [9.25, 30.5],
+            popupAnchor: [0, -20.5]
         });
+
     
     var markers = []; // Store marker references
 
@@ -249,11 +235,13 @@
         marker.addTo(map); // Ensure marker is added to the map
     });
 });
-
-
-
     </script>
-    
+
+    <script>
+        document.getElementById('goBackButton').addEventListener('click', function() {
+            window.location.href = 'admin.php'; // Modify this URL as needed
+        });
+    </script>
 
 </body>
 </html>

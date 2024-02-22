@@ -1,9 +1,9 @@
 <?php
 session_start();
 
-// Check if the user is logged in and is an Investigator
-if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'Investigator') {
-    header("Location: login.php");
+// Redirect user to login page if they're not logged in or not an admin
+if (!isset($_SESSION['userType']) || $_SESSION['userType'] != 'investigator') {
+    header('Location: login.php');
     exit();
 }
 ?>

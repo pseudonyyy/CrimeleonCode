@@ -83,6 +83,14 @@
         button:hover {
         background-color: #003366;
         }
+
+        .error-message {
+            text-align: center; /* Center text within the div */
+            color: red;
+            margin: 0 auto; /* Center the div itself */
+            width: 100%; /* Take full width to maintain center alignment */
+            padding: 10px 0; /* Optional padding for styling */
+        }
     </style>
 </head>
 <body>
@@ -98,13 +106,23 @@
                 <label>Password</label>
                 <input type="password" name="password" required>
                 <button type="submit" name="login">Login</button>
-                <?php
-                session_start(); // Start the session at the beginning
-                if (isset($_SESSION['error'])) {
-                    echo "<p style='color: red; text-align: center;'>" . $_SESSION['error'] . "</p>"; // Display the error message
-                    unset($_SESSION['error']); // Clear the error message for subsequent requests
-                }
-                ?>
+
+<?php if(isset($_GET['error'])): ?>
+    <div class="error-message">
+        <?php
+            if($_GET['error'] == 'incorrectpassword') {
+                echo "The password you entered was not valid.";
+            } elseif($_GET['error'] == 'nouser') {
+                echo "No user found with that email address.";
+            } elseif($_GET['error'] == 'invalidusertype') {
+                echo "Invalid user type.";
+            } else {
+                echo "An unknown error occurred. Please try again.";
+            }
+        ?>
+    </div>
+<?php endif; ?>
+
             </form>
         </div>
     </div>

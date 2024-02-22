@@ -71,6 +71,9 @@ $conn->close();
 <html>
 <head>
     <title>CRIMELEON - User Management</title>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <style>
         @import url('https://fonts.cdnfonts.com/css/lovelo?styles=25962');
     </style>
@@ -185,13 +188,14 @@ $conn->close();
         }
 
         .content {
-            max-width: 1900px;
-            margin: 40px auto;
-            background: #c3d1e9;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
+    max-width: 100%;
+    margin: 40px auto;
+    background: #c3d1e9;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    overflow-x: auto; /* Enables horizontal scrolling */
+}
 
         .content h2, .content h3 {
             color: #0a2242;
@@ -201,19 +205,24 @@ $conn->close();
         }
 
         table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 10px;
-        }
+    width: 100%;
+    table-layout: fixed; /* Ensures columns have fixed width */
+    border-collapse: collapse;
+    margin-bottom: 10px;
+}
 
         table, th, td {
             border: 1px solid #e0e0e0;
         }
 
         th, td {
-            padding: 10px;
-            text-align: left;
-        }
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #e0e0e0;
+    overflow: hidden; /* Hides overflowed content */
+    text-overflow: ellipsis; /* Shows '...' for overflowed content */
+    white-space: nowrap; /* Prevents text from wrapping to the next line */
+}
 
         th {
             background-color: #0a2242;
@@ -251,7 +260,7 @@ $conn->close();
 
     .content input[type="text"]:focus {
         outline: none;
-        border-color: #4CAF50;
+        border-color: #0a2242;
         box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
     }
 
@@ -278,6 +287,7 @@ $conn->close();
     .content button[type="reset"]:hover {
         background-color: #174e97; /* Darker red on hover */
     }
+    
 
         
     
@@ -655,5 +665,14 @@ $conn->close();
     <?php endif; ?>
 </div>
 
+<script>
+        $(document).ready(function() {
+            // Make table headers resizable.
+            $('th').resizable({
+                handles: 'e', // Enable resizing on the east side (right side) of the header
+                minWidth: 50 // Minimum width of the column
+            });
+        });
+    </script>
 </head>
-<body>
+    </body>

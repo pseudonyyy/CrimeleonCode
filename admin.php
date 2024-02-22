@@ -1,9 +1,9 @@
 <?php
 session_start();
 
-// Check if the user is logged in and is an Admin
-if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'Admin') {
-    header("Location: login.php");
+// Redirect user to login page if they're not logged in or not an admin
+if (!isset($_SESSION['userType']) || $_SESSION['userType'] != 'admin') {
+    header('Location: login.php');
     exit();
 }
 ?>
@@ -194,12 +194,7 @@ if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'Admin') {
     </div>
 </section>
 
-<section class="admin-section">
-    <span>ADMIN</span>
-</section>
 
-<div class="content">
-        <!-- Your admin-specific content goes here -->
-    </div>
+
 </body>
 </html>
